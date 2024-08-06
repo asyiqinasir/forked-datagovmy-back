@@ -24,6 +24,10 @@ class Command(BaseCommand):
 
         rebuild = operation == "REBUILD"
 
+        print(
+            f"Category: {category}, Operation: {operation}, Files: {files}, Rebuild: {rebuild}"
+        )
+
         """
         CATEGORIES :
         1. DATA_CATALOG
@@ -60,5 +64,11 @@ class Command(BaseCommand):
             #     raise InterruptedError(
             #         "REBUILD operation is not allowed for models that contain `download` field. Please delete the objects individually to avoid data loss!"
             #     )
+
+            print("Valid category & operation")
             builder = GeneralMetaBuilder.create(property=category)
             builder.build_operation(manual=True, rebuild=rebuild, meta_files=files)
+            print("Build operation called")
+
+        else:
+            print("Invalid category or operation")
