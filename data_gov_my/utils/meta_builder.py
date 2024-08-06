@@ -620,6 +620,7 @@ class DataCatalogueBuilder(GeneralMetaBuilder):
     def update_or_create_meta(
         self, filename: str, metadata: DataCatalogueValidateModel
     ):
+        print("Starting DataCatalogueBuilder..")
         # check if need to add default translations
         default_keys = set(self.default_translation_mapping)
         filter_keys = set()
@@ -748,6 +749,10 @@ class DataCatalogueBuilder(GeneralMetaBuilder):
                 DataCatalogue(index=i, catalogue_meta=dc_meta, data=row)
                 for i, row in enumerate(data)
             ]
+
+        # Print statement for each data catalogue processed for debug logging
+        for catalogue in catalogue_data:
+            print(f"Data catalogue {catalogue.index} is finished.")
 
         # side quest: handle the dataviz "dropdown" building
         for dv in dataviz:
