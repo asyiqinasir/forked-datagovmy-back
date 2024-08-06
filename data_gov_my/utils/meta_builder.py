@@ -354,20 +354,25 @@ class GeneralMetaBuilder(ABC):
             [f + ".json" for f in meta_files] if meta_files else self.get_meta_files()
         )
 
-        # send telegram message
-        operation_type = "REBUILD" if rebuild else "UPDATE"
-        trigger_type = "MANUAL" if manual else "SELECTIVE"
-        operation_files = triggers.format_files_with_status_emoji(meta_files, "🔄")
-        triggers.send_telegram(
-            triggers.format_header(
-                f"PERFORMING {self.CATEGORY} {operation_type} ({trigger_type})"
-            )
-            + "\n"
-            + operation_files
-        )
+        print("Done..get meta json files in the github directory")
+
+        # # send telegram message
+        # operation_type = "REBUILD" if rebuild else "UPDATE"
+        # trigger_type = "MANUAL" if manual else "SELECTIVE"
+        # operation_files = triggers.format_files_with_status_emoji(meta_files, "🔄")
+        # triggers.send_telegram(
+        #     triggers.format_header(
+        #         f"PERFORMING {self.CATEGORY} {operation_type} ({trigger_type})"
+        #     )
+        #     + "\n"
+        #     + operation_files
+        # )
+        # print("Done..send telegram message")
 
         if rebuild:
             self.MODEL.objects.all().delete()
+
+        print("Done..delete all objects")
 
         failed = []
         meta_objects = []
@@ -620,7 +625,6 @@ class DataCatalogueBuilder(GeneralMetaBuilder):
     def update_or_create_meta(
         self, filename: str, metadata: DataCatalogueValidateModel
     ):
-        print("Starting DataCatalogueBuilder..")
         # check if need to add default translations
         default_keys = set(self.default_translation_mapping)
         filter_keys = set()
@@ -752,7 +756,7 @@ class DataCatalogueBuilder(GeneralMetaBuilder):
 
         # Print statement for each data catalogue processed for debug logging
         for catalogue in catalogue_data:
-            print(f"Data catalogue {catalogue.index} is finished.")
+            print(f"Data catalogue {catalogue.index} done")
 
         # side quest: handle the dataviz "dropdown" building
         for dv in dataviz:
