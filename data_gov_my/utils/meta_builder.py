@@ -377,6 +377,9 @@ class GeneralMetaBuilder(ABC):
         failed = []
         meta_objects = []
         for meta in meta_files:
+            if meta == ".gitkeep":
+                continue
+
             try:
                 f_meta = os.path.join(self.get_github_directory(), meta)
                 f = open(f_meta)
