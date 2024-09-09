@@ -372,7 +372,7 @@ class GeneralMetaBuilder(ABC):
         if rebuild:
             self.MODEL.objects.all().delete()
 
-        print("Done..delete all objects")
+            print("Done..delete all objects")
 
         failed = []
         meta_objects = []
@@ -473,6 +473,7 @@ class DashboardBuilder(GeneralMetaBuilder):
             DashboardJson.objects.all().delete()
 
         successful_meta = set()
+        failed_dashboard_charts = {}  # To track failed charts for each dashboard
 
         for meta in created_objects:
             failed = []
@@ -522,6 +523,11 @@ class DashboardBuilder(GeneralMetaBuilder):
                     logger.error(traceback.format_exc())
                     failed.append(failed_obj)
 
+                    # Collect failed charts in the failed_dashboard_charts dictionary
+                    if dbd_name not in failed_dashboard_charts:
+                        failed_dashboard_charts[dbd_name] = []
+                    failed_dashboard_charts[dbd_name].append(chart_name)
+
             # For a single dashboard, send status on all its charts
             telegram_msg = [
                 triggers.format_header(
@@ -541,6 +547,15 @@ class DashboardBuilder(GeneralMetaBuilder):
                 )
 
             triggers.send_telegram("\n".join(telegram_msg))
+
+        # Print summary of failed dashboards and charts at the end
+        if failed_dashboard_charts:
+            print("\nSUMMARY OF FAILED CHARTS BY DASHBOARD:")
+            for dashboard, charts in failed_dashboard_charts.items():
+                print(f"Dashboard: {dashboard}")
+                print("Failed Charts:", ", ".join(charts))
+            else:
+                print("\nALL/OTHER DASHBOARDS AND CHARTS BUILT SUCCESSFULLY!")
 
         return successful_meta
 
